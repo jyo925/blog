@@ -25,6 +25,8 @@
         </dependency>-->
 
         <!-- JSP 템플릿 엔진 -->
+        <!-- 스프링 부트는 기본적으로 jsp를 지원하지 않기 때문에 추가
+        jsp는 동적 파일 이기 때문에 static 폴더에 넣어도 스프링부트가 인식 X-->
         <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-jasper</artifactId>

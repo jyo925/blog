@@ -1,0 +1,17 @@
+** 스프링부트 + jpa + jsp 블로그 만들기 **
+만들면서 배운 것들 정리
+
+
+HTTP 요청
+
+Maven이란?
+
+
+jsp를 사용하기 위해
+1. jasper 의존성 추가
+2. yml에서 뷰 경로 설정
+3. resources/static이 아닌 webapp/WEB-INF/views 폴더 생성하여 여기에 jsp파일 저장
+
+
+
+
