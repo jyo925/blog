@@ -36,10 +36,13 @@ public class Board {
     @JoinColumn(name="userId")
     private User user; // DB는 오브젝트를 저장할 수 없다. FK, 자바는 오브젝트를 저장할 수 있다.
 
-/*    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE) // mappedBy 연관관계의 주인이 아니다 (난 FK가 아니에요) DB에 칼럼을 만들지 마세요.
+    // mappedBy 연관관계의 주인 X, FK가 X, DB에 칼럼 생성 X, 단지 join해서 값을 담기 위해 사용됨
+    // 주인테이블 Reply에서 나를 사용하는 변수명을 mappedBy에 기입
+    // 댓글도 바로 보게하려면 fetch를 EAGER로 설정해야 함 (OneToMany는 기본이 지연로딩)
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({"board"})
     @OrderBy("id desc")
-    private List<Reply> replys;*/
+    private List<Reply> replys;
 
     @CreationTimestamp
     private LocalDateTime createDate;
