@@ -21,3 +21,9 @@ HTML에 데이터를 Json으로 변경해서 Java로 전송하고, Java에서는
 -> 컨트롤러에서 req 요청이 올 때 Body 데이터를 Json으로 받을 거임 (MIME타입이 JSON)
 -> 컨트롤러에서 res 할 때 Java Object를 Json으로 변경해서 응답
 
+
+dummyControllerTest detail() 에서
+추후 Spring Aop를 이용해서 Exception을 가로채서 에러페이지를 보여주기
+
+MessageConverter의 무슨 역할을, 언제 작동하는지
+
