@@ -5,6 +5,7 @@ import com.cos.blog.model.RoleType;
 import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -21,6 +22,21 @@ public class DummyControllerTest {
 
     private UserRepository userRepository;
 
+    //delete
+    @DeleteMapping("/dummy/user/{id}")
+    public String delete(@PathVariable int id) {
+
+        try {
+            userRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            return "삭제에 실패했습니다. 해당 id는 DB에 없습니다.";
+        }
+        return "삭제되었습니다. ID: " + id;
+    }
+
+
+
+
     //update email, pw
     //form 태그 말고 json 데이터로 받기
     //스프링이 json 데이터를 받아서 메시지 컨버터를 이용해 (jackson라이브러리) 자바 오브젝트로 변환해줌
@@ -33,19 +49,19 @@ public class DummyControllerTest {
         System.out.println("id = " + id);
         System.out.println("requestUser password= " + requestUser.getPassword());
         System.out.println("requestUser email= " + requestUser.getEmail());
-        //자바는 파라미터로 함수를 넣을 수 없음
-        //람다식 이용
+
+        //자바는 파라미터로 함수를 넣을 수 없음 -> 람다식 이용
+        //user 객체는 영속화(영속성 컨텍스트에서 관리 시작)
         User user = userRepository.findById(id).orElseThrow(()->{
             return new IllegalArgumentException("해당 유저가 없습니다. 수정에 실패하였습니다.");
         });
 
+        //save를 사용하지 않고 @Transactional을 이용하면 update됨 -> 더티채킹
         user.setPassword(requestUser.getPassword());
         user.setEmail(requestUser.getEmail());
 //        userRepository.save(user);
-        
-        //save를 사용하지 않고 @Transactional을 이용하면 update됨 -> 더티채킹
 
-        return null;
+        return user;
     }
 
     @GetMapping("/dummy/users")
