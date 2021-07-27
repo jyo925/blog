@@ -33,6 +33,8 @@ public class UserApiController {
     @PostMapping("/api/user/login")
     public ResponseDto<Integer> login(@RequestBody User user, HttpSession session) {
         log.info("로그인 호출");
+
+        //principal 접근 주체
         User principal = userService.login(user);
 
         //세션에 담기

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Log
 public class GlobalExceptionHandler {
 
-    //IllegalArgumentException이 발생하면 그 에러를 스프링이 이 함수로 전달
+    //IllegalArgumentException이 발생하면 그 에러를 스프링이 이 함수의 매개변수로 전달
     @ExceptionHandler(value = Exception.class)
     public ResponseDto<String> handleArgumentException(Exception e) {
         log.info("GlobalExceptionHandler handleArgumentException()");
