@@ -6,9 +6,9 @@ index = {
         $("#btn-save").on("click", () => {
             this.save();
         });
-        $("#btn-login").on("click", () => {
+/*        $("#btn-login").on("click", () => {
             this.login();
-        });
+        });*/
     },
 
     save: function () {
@@ -23,19 +23,19 @@ index = {
         //ajax 호출시 default 비동기 호출
         $.ajax({
             type: "POST",
-            url: "/blog/api/user",
+            url: "/auth/joinProc",
             data: JSON.stringify(data), //http body 데이터, 자바스크립트 오브젝트를 JSON 문자열로 변환(Java가 이해할 수 있도록)
             contentType: "application/json; charset=utf-8",
             dataType: "json" //응답을 어떤 타입으로 받을지, 응답은 버퍼로 오기 때문에 기본적으로 모두 문자열 형태
         }).done(function (resp) { //응답 문자열이 json 형태면 자동으로 자바스크립트 오브젝트 형태로 변환되어 함수 파라미터로 전달됨
             alert("회원가입이 완료되었습니다.");
-            location.href = "/blog";
+            location.href = "/";
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
     },
 
-    login: function () {
+/*    login: function () {
         // alert("user의 svae 호출");
         let data = {
             username: $("#username").val(),
@@ -44,18 +44,18 @@ index = {
 
         $.ajax({
             type: "POST",
-            url: "/blog/api/user/login",
+            url: "/api/user/login",
             data: JSON.stringify(data), 
             contentType: "application/json; charset=utf-8",
             dataType: "json" //응답을 어떤 타입으로 받을지, 응답은 버퍼로 오기 때문에 기본적으로 모두 문자열 형태
         }).done(function (resp) { //응답 결과 문자열이 생긴게 json이라면 함수 파라미터로 자동 전달
             console.log(resp);
             alert("로그인이 완료되었습니다.");
-            location.href = "/blog";
+            location.href = "/";
         }).fail(function (error) {
             alert(JSON.stringify(error));
         });
-    }
+    }*/
 };
 
 index.init()
