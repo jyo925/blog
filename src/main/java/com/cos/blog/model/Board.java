@@ -29,7 +29,7 @@ public class Board {
     @Lob // 대용량 데이터
     private String content; // 섬머노트 라이브러리 <html>태그가 섞여서 디자인이 됨.
 
-    @ColumnDefault("0")
+//    @ColumnDefault("0")
     private int count; // 조회수
 
     @ManyToOne(fetch = FetchType.EAGER)  // Many = Many,  User = One
@@ -42,7 +42,7 @@ public class Board {
     @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties({"board"})
     @OrderBy("id desc")
-    private List<Reply> replys;
+    private List<Reply> replies;
 
     @CreationTimestamp
     private LocalDateTime createDate;
