@@ -155,3 +155,26 @@ JPA Open In View(default = true) 전략
 
 - CSRF란?
 사용자가 서버에 공격하도록 즉 사용자가 의도하지 않은 공격을 서버에 하게 됨
+
+
+** 스프링 작동 원리 **
+톰켓 시작 - 필터 - 디스패처 - controller - service - repo - 영속성 - datasource - DB
+
+톰켓이 실행되면 메모리에 미리 만들어지는 것 -> 필터, 디스패처, datasource, 뷰리졸버, 인터셉터 등
+사용자 요청이 들어올때마다 메모리에 만들어지는 것 -> controller, service, jpa repo, 영속성 컨텍스트
+
+controller(JDBC 연결) - service(트랜잭션 시작 및 종료)
+트랜잭션이 종료될 때 실제로 커밋이 일어난다.
+
+
+** 스프링 시큐리티 **
+세션 내부에 시큐리티만을 위한 공간이 있는데 이를 시큐리티 컨텍스트라고 한다.
+이 공간에는 User 객체를 저장하는 것이 아닌 Authentication 객체를 저장한다.
+Authentication 객체는 AuthenticationManager가 만드는데, username, password를 알아야 한다.
+
+-> 사용자가 로그인(username, password)
+-> 필터(Authentication Filter)가 낚아채서 UsernameAuthenticationToken 생성
+-> UsernameAuthenticationToken를 Manager에 던지면 Manager가 세션(Authentication 객체)을 생성해줌
+-> Manager는 username을 UserDetailService에 던진다. 왜냐하면 해당 유저가 DB에 있는지 알아야 하기 때문에 UserDetailService가 DB에 질의를 수행
+-> 존재하면 Manager는 password를 암호화해서 DB랑 비교 확인
+-> 맞으면 Authentication 객체를 만들어서 세션에 저장
