@@ -8,6 +8,7 @@ import com.cos.blog.service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -28,6 +29,9 @@ public class UserApiController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
 
     @PostMapping("/auth/joinProc")
     public ResponseDto<Integer> save(@RequestBody User user) {
@@ -42,14 +46,27 @@ public class UserApiController {
                                        HttpSession httpSession) {
         userService.update(user);
         //DB 값은 변경했지만 세션값이 변경되지 않음 -> 세션 값 직접 변경
-        //Authentication 객체를 만들어서 강제로 넣기 ---> X
-        //Manager에 접근해서 강제 로그인하여 Authentication을 만들면 자동으로 시큐리티 세션에 넣어주는 방법으로 변경
+        //1. Authentication 객체를 만들어서 강제로 넣는 방법 ---> 사용X
+        //라는데 나는 principal값을 수정했더니 잘 동작함
+        //그러나 회원 정보가 1000개라면? 각 필드를 수기로 수정하는 것은 어려움 -> 아래 Manager를 이용한 방법으로 적용하기
+
+//        principal.getUser().setEmail(user.getEmail());
+//        principal.getUser().setPassword(user.getPassword());  //이렇게 넣어주면 암호화 되지 않은 값으로 들어감 -> 서비스 단에서 user.setPassword(encPassword) 수행해줘야함
+
 /*        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, null, principal.getAuthorities());
         SecurityContext securityContext = SecurityContextHolder.getContext();
         securityContext.setAuthentication(authentication);
         httpSession.setAttribute("SPRING_SECURITY_CONTEXT", securityContext);*/
 
-
+        //2. Manager에 접근해서 강제 로그인하여 Authentication을 만들면 자동으로 시큐리티 세션에 넣어주는 방법
+        //기존에 있던 Authentication은 사라지는 건가?
+        //UsernamePasswordAuthenticationToken의 파라미터 값 유형이 다양한데 차이는?
+        //세션 등록
+        //이 방식을 사용하려면 username도 bodydata에 담아서 받아야함
+        Authentication authentication =
+                authenticationManager.authenticate(
+                        new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
