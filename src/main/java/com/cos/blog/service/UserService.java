@@ -3,30 +3,44 @@ package com.cos.blog.service;
 import com.cos.blog.model.RoleType;
 import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
+
 @Service
 @Log
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private BCryptPasswordEncoder encoder;
+    private final BCryptPasswordEncoder encoder;
 
-
+    @Transactional(readOnly = true)
+    public User find(String username) {
+        User user = userRepository.findByUsername(username).orElseGet(()->{
+            return new User();
+        });
+        return user;
+/*
+        Optional<User> user = userRepository.findByUsername(username);
+        if (!user.isPresent()) {
+            return new User();
+        }
+        User user1 = (User) user.get();
+        return user1;
+*/
+    }
 
     @Transactional
     public void join(User user) {
+
         String rawPassword = user.getPassword();
         String encPassword = encoder.encode(rawPassword);
         user.setPassword(encPassword);
@@ -44,9 +58,15 @@ public class UserService {
                 .orElseThrow(() -> {
                     return new IllegalArgumentException("회원 찾기 실패");
                 });
-        String rawPassword = user.getPassword();
-        String encPassword = encoder.encode(rawPassword);
-        persistanceUser.setPassword(encPassword);
+
+        //Validate 체크
+        //Oauth 사용자는 패스워드 수정 X
+        if (persistanceUser.getOauth() == null || persistanceUser.getOauth().equals("")) {
+            String rawPassword = user.getPassword();
+            String encPassword = encoder.encode(rawPassword);
+            persistanceUser.setPassword(encPassword);
+        }
+
         persistanceUser.setEmail(user.getEmail());
 
 //        user.setPassword(encPassword); //굳이 세션에 패스워드를 담아줄 필요가 없음

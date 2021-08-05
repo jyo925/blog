@@ -12,15 +12,11 @@
             <label for="password">Password:</label>
             <input name="password" type="password" class="form-control" placeholder="Enter password" id="password">
         </div>
-<%--                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input name="remember" class="form-check-input" type="checkbox"> Remember me
-                    </label>
-                </div>--%>
         <button id="btn-login" class="btn btn-primary">로그인</button>
+        <a href="https://kauth.kakao.com/oauth/authorize?client_id=1a1c602e60bc0b66c3e1137a353c0669&redirect_uri=http://localhost:8080/auth/kakao/callback&response_type=code"><img src="/image/kakao_login_btn.png" height="39"/></a>
     </form>
-
+    <br/><br/><br/><br/><br/><br/>
 
 </div>
-<%--<script src="/js/user.js"></script>--%>
+
 <%@ include file="../layout/footer.jsp"%>
